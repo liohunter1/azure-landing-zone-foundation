@@ -1,0 +1,86 @@
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="Azure Landing Zone Foundation" version="21.0.0" type="github">
+  <diagram id="azure-landing-zone" name="Azure Landing Zone Architecture">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Azure Subscription boundary -->
+        <mxCell id="2" value="Azure Subscription" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.azure2.subscription;labelPosition=top;verticalLabelPosition=top;align=center;verticalAlign=bottom;strokeColor=#0072C6;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1080" height="740" as="geometry" />
+        </mxCell>
+
+        <!-- Hub Resource Group -->
+        <mxCell id="3" value="Resource Group: rg-lz-prod-hub" style="swimlane;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="110" width="1000" height="640" as="geometry" />
+        </mxCell>
+
+        <!-- Hub VNet -->
+        <mxCell id="4" value="Hub VNet (10.0.0.0/16)" style="swimlane;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="170" width="920" height="540" as="geometry" />
+        </mxCell>
+
+        <!-- AzureBastionSubnet -->
+        <mxCell id="5" value="AzureBastionSubnet&#xa;10.0.255.0/26" style="swimlane;startSize=25;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="140" y="230" width="260" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Bastion Host -->
+        <mxCell id="6" value="Azure Bastion Host&#xa;(Standard SKU)" style="shape=mxgraph.azure2.bastion;labelPosition=bottom;verticalLabelPosition=bottom;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="220" y="270" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Bastion Public IP -->
+        <mxCell id="7" value="Public IP&#xa;(Static / Standard)" style="shape=mxgraph.azure2.public_ip_addresses;labelPosition=bottom;verticalLabelPosition=bottom;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="320" y="270" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Management Subnet -->
+        <mxCell id="8" value="Management Subnet&#xa;10.0.1.0/24" style="swimlane;startSize=25;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="430" y="230" width="260" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Management NSG -->
+        <mxCell id="9" value="NSG: Management&#xa;Allow SSH/RDP from Bastion&#xa;Deny All Inbound" style="shape=mxgraph.azure2.nsg;labelPosition=bottom;verticalLabelPosition=bottom;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="490" y="270" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Workload Subnet -->
+        <mxCell id="10" value="Workload Subnet&#xa;10.0.2.0/24" style="swimlane;startSize=25;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="720" y="230" width="280" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Workload NSG -->
+        <mxCell id="11" value="NSG: Workload&#xa;Allow from Management&#xa;Allow HTTPS Outbound&#xa;Deny All Inbound" style="shape=mxgraph.azure2.nsg;labelPosition=bottom;verticalLabelPosition=bottom;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="790" y="270" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Budget -->
+        <mxCell id="12" value="Cost Management Budget&#xa;Monthly / Alert at 80% &amp; 100%" style="shape=mxgraph.azure2.cost_management;labelPosition=bottom;verticalLabelPosition=bottom;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="430" y="490" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Internet -->
+        <mxCell id="13" value="Internet" style="shape=mxgraph.cisco.sites.generic_building;labelPosition=bottom;verticalLabelPosition=bottom;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="220" y="30" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <!-- Internet -> Bastion PIP -->
+        <mxCell id="14" value="HTTPS 443" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#0072C6;" edge="1" source="13" target="7" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Bastion -> Management SSH/RDP -->
+        <mxCell id="15" value="SSH/RDP" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#b85450;" edge="1" source="6" target="9" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Management -> Workload -->
+        <mxCell id="16" value="Internal traffic" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#9673a6;" edge="1" source="9" target="11" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
